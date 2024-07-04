@@ -1,0 +1,5 @@
+requests
+win32gui
+math
+win32con
+ctypes
