@@ -1,0 +1,12 @@
+win32gui
+win32api
+win32con
+ctypes
+random
+math
+time
+sys
+os
+subprocess
+pygame
+threading
