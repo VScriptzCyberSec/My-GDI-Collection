@@ -1,5 +1,12 @@
-requests
 win32gui
-math
+win32api
 win32con
 ctypes
+random
+math
+time
+sys
+os
+subprocess
+winreg
+pygame
