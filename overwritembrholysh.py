@@ -1,7 +1,7 @@
 import requests
 
 # Step 1: Download the image from the HTTPS link
-url = "https://example.com/path/to/your/image.jpg"  # Replace with your actual image URL
+url = "https://th.bing.com/th/id/OIP.RH2gc-Oe1qSvCjD3IRYAyQHaE7?rs=1&pid=ImgDetMain"  # Replace with your actual image URL
 response = requests.get(url)
 
 # Ensure the request was successful
