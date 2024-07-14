@@ -22,8 +22,9 @@ def remove_onedrive_backups():
 # Function to reset Windows
 def reset_windows():
     try:
-        # Run the command to open the Reset this PC option in Windows
-        subprocess.run('systemreset -factoryreset', check=True, shell=True)
+        # Run the PowerShell script to reset Windows with the "Remove everything" option
+        ps_script_path = 'reset_windows.ps1'
+        subprocess.run(['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', ps_script_path], check=True)
         print("Reset process initiated.")
     except subprocess.CalledProcessError as e:
         print(f"Failed to initiate reset process: {e}")
@@ -35,3 +36,4 @@ remove_onedrive_backups()
 
 # Call the function to reset Windows
 reset_windows()
+
